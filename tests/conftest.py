@@ -16,16 +16,6 @@ def pytest_configure(config):
 
         config.option.htmlpath = os.path.join(reports_dir, f"API_Test_Report_{timestamp}.html")
 
-# @pytest.fixture(scope="function")
-# def page():
-#     playwright =  sync_playwright().start()
-#     browser = playwright.chromium.launch(headless=False)
-#     context = browser.new_context()
-#
-#     page = context.new_page()
-#
-#     return page
-
 @pytest.fixture(scope="function")
 def page():
     with sync_playwright() as playwright:
