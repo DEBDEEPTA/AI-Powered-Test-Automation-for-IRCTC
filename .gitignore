@@ -16,4 +16,7 @@ __pycache__/
 # Ignore logs
 reports/logs/
 # Ignore Reports
-reports/
+reports
+
+# Ignore generated tests
+tests/generated/

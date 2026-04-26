@@ -23,7 +23,8 @@ Project Rules:
 - Always include meaningful assertions.
 - Use the available tool to fetch Page object Model.
 - Do not Include extra assertions.
-- Use only the functions available in the Page Object Model classes
+- Use only the functions available in the Page Object Model classes.
+- Give suitable pytest markers names to the generated test cases.  
 """
 
 

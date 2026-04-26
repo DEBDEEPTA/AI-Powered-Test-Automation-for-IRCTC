@@ -1,7 +1,7 @@
 from playwright.sync_api import Page, expect
 
 class LoginPage:
-    URL = "https://www.irctc.co.in/"
+    URL = "https://www.irctc.co.in/nget/train-search"
 
     def __init__(self, page:Page):
         self.page = page
