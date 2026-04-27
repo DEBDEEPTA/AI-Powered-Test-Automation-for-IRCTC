@@ -1,47 +1,25 @@
 from utils.logger import get_logger
 logger = get_logger()
 
-def get_available_page_objects() -> str:
-    """
-    Returns available Page Object Model classes and methods.
-
-    This helps the test generation agent generate tests using the
-    existing Page Object Model instead of raw locators.
-    """
-
-    logger.info("Tool called: get_available_page_objects")
-
-    return """
-Available Page Object Classes:
-
+PNR_STATUS_PAGE_RULE_SET = """
 ==================================================
-1. LoginPage
+3. PNRStatusPage
 ==================================================
-
 Import:
-from pages.login_page import LoginPage
+from pages.pnr_status_page import PNRStatusPage
 
 Purpose:
-LoginPage is used to load the IRCTC home/login page and perform login-related actions.
+PNRStatusPage is used to check the status of a valid pnr_number.
 
 Methods:
-- load_login_page() -> None
-    Loads the IRCTC home page. This should be used as the first step in every generated test case.
+- pnr_status(self,pnr_number:str)-> None:
+- is_pnr_status_displayed(self,pnr_number)-> bool:
+    Returns True if valid PNR status is displayed, otherwise returns False.
 
-- login(name: str, password: str) -> None
-    Enters username and password and performs the login action.
-
-- login_status(name: str) -> bool
-    Returns True if login is successful for the given user name, otherwise returns False.
-
-LoginPage Rules:
-- Do not include assertion to verify whether the URL is redirected to Dashboard.
-- Use login_status(name) method to assert login success.
-- Do not write raw Playwright locators in generated tests.
-- Do not hardcode real credentials unless the user explicitly provides them.
-- If credentials are not provided, use placeholder values such as "username" and "password".
-
-
+PNRStatusPage Rules:
+- Login is not required to check PNR Status search.
+"""
+SEARCH_TRAIN_PAGE_RULE_SET = """
 ==================================================
 2. SearchTrainsPage
 ==================================================
@@ -91,7 +69,7 @@ Parameter Details:
     This parameter is optional.
     If the user provides a quota/category, pass that value.
     If the user does not provide a quota/category, pass None.
-
+    
 SearchTrainsPage Rules:
 - Login is optional for train search.
 - Default behavior: generate train search tests without login.
@@ -133,8 +111,51 @@ search_page.search_trains(
 )
 
 assert search_page.is_search_results_displayed()
+"""
+LOGIN_PAGE_RULE_SET = """
+==================================================
+1. LoginPage
+==================================================
 
+Import:
+from pages.login_page import LoginPage
 
+Purpose:
+LoginPage is used to load the IRCTC home/login page and perform login-related actions.
+
+Methods:
+- load_login_page() -> None
+    Loads the IRCTC home page. This should be used as the first step in every generated test case.
+
+- login(name: str, password: str) -> None
+    Enters username and password and performs the login action.
+
+- login_status(name: str) -> bool
+    Returns True if login is successful for the given user name, otherwise returns False.
+
+LoginPage Rules:
+- Do not include assertion to verify whether the URL is redirected to Dashboard.
+- Use login_status(name) method to assert login success.
+- Do not write raw Playwright locators in generated tests.
+- Do not hardcode real credentials unless the user explicitly provides them.
+- If credentials are not provided, use placeholder values such as "username" and "password".
+"""
+
+def get_available_page_objects() -> str:
+    """
+    Returns available Page Object Model classes and methods.
+
+    This helps the test generation agent generate tests using the
+    existing Page Object Model instead of raw locators.
+    """
+
+    logger.info("Tool called: get_available_page_objects")
+
+    return f"""
+Available Page Object Classes:
+{LOGIN_PAGE_RULE_SET}
+{SEARCH_TRAIN_PAGE_RULE_SET}
+{PNR_STATUS_PAGE_RULE_SET}
 ==================================================
 Global Rules
 ==================================================
@@ -148,6 +169,7 @@ Global Rules
 - Keep generated tests readable and pytest-compatible.
 """
 
-
-
+if __name__=="__main__":
+    # FOR DEBUGING
+    print(get_available_page_objects())
 

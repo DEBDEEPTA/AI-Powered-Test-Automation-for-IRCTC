@@ -1,4 +1,13 @@
 from playwright.sync_api import Page, expect
+import tkinter as tk
+
+def get_screen_size():
+    root = tk.Tk()
+    root.withdraw()
+    width = root.winfo_screenwidth()
+    height = root.winfo_screenheight()
+    root.destroy()
+    return width, height
 
 class LoginPage:
     URL = "https://www.irctc.co.in/nget/train-search"
@@ -18,7 +27,11 @@ class LoginPage:
          Load the Login page of IRCTC
         """
         self.page.goto(LoginPage.URL)
-        self.page.set_viewport_size({"width": 1920, "height": 940})
+        # self.page.set_viewport_size({"width": 1920, "height": 940})
+
+        # Dynamic screen size
+        width, height = get_screen_size()
+        self.page.set_viewport_size({"width": width, "height": height})
 
 
     def login(self, name:str,password:str):
