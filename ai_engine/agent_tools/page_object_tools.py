@@ -343,6 +343,135 @@ booking_page.select_train_based_on_availability(
 )
 
 """
+PASSENGER_DETAILS_PAGE_RULE_SET = """
+==================================================
+PassengerDetailsPage
+==================================================
+
+Import:
+from pages.passenger_details_page import PassengerDetailsPage
+
+Purpose:
+PassengerDetailsPage is used to fill passenger details during the IRCTC ticket booking flow.
+
+Functional Description:
+This page object handles the passenger details step after a train has been selected for booking. It fills one or more passenger records, enters the passenger mobile number, optionally selects auto-upgrade, selects payment mode, and clicks Continue.
+
+Important Flow Dependency:
+- Use PassengerDetailsPage only after BookingPage has selected a train and the passenger details page is displayed.
+- Do not use PassengerDetailsPage directly from the IRCTC home page.
+- Do not use PassengerDetailsPage before train selection.
+- This page object does not search trains.
+- This page object does not select trains.
+- This page object does not perform final payment.
+
+Main Method:
+- fill_all_passengers(
+      passengers: list[dict],
+      mobile_number: str,
+      auto_upgrade: bool = False,
+      payment_mode: str = "card"
+  ) -> None
+
+Method Purpose:
+fill_all_passengers() fills all passenger rows, enters mobile number, handles auto-upgrade option, selects payment mode, and clicks Continue.
+
+Parameter Details:
+- passengers:
+    A list of passenger dictionaries.
+    Each passenger dictionary must contain:
+    - name
+    - age
+    - gender
+    - berth
+
+    Example:
+    passengers = [
+        {"name": "DHIRAJKUMAR M", "age": "22", "gender": "M", "berth": "SL"},
+        {"name": "DEV", "age": "22", "gender": "M", "berth": "SU"}
+    ]
+
+- mobile_number:
+    Passenger mobile number as string.
+    Example:
+    "8489403967"
+
+- auto_upgrade:
+    Boolean value.
+    True means select the auto-upgrade option.
+    False means skip auto-upgrade.
+    Default is False.
+
+- payment_mode:
+    Payment mode as string.
+    Allowed values:
+    - "card"
+    - "upi"
+
+    "card" selects Credit & Debit card payment option.
+    "upi" selects BHIM/UPI payment option.
+    Default is "card".
+
+PassengerDetailsPage Rules:
+- Use this page object only for filling passenger details.
+- Use only fill_all_passengers() in generated tests.
+- Do not call helper methods directly in generated tests.
+- Do not write raw Playwright locators in generated tests.
+- Do not invent extra PassengerDetailsPage methods.
+- Do not perform final payment confirmation.
+- Stop the test after fill_all_passengers() completes, unless another existing page object method is explicitly available.
+- passenger data must be passed as list[dict].
+- Each passenger dictionary must include name, age, gender, and berth.
+- payment_mode must be either "card" or "upi".
+- auto_upgrade must be True or False.
+
+Helper Methods:
+The following methods exist internally in PassengerDetailsPage but should not be called directly from generated tests:
+- wait_for_passenger_page()
+- click_add_passenger()
+- fill_single_passenger(passenger_index: int, name: str, age: str, gender: str, berth: str)
+- set_auto_upgrade(auto_upgrade: bool)
+- select_payment_mode(payment_mode: str)
+- click_continue()
+
+Assertion Rules:
+- PassengerDetailsPage currently does not provide a validation/assertion method.
+- Do not invent validation methods like is_passenger_details_submitted() unless that method exists in the page object.
+- If assertion is required, suggest adding a validation method to the page object.
+- Recommended future validation method:
+  - is_passenger_details_continue_successful() -> bool
+    Returns True if the next booking step is displayed after clicking Continue.
+
+Example Usage:
+passenger_page = PassengerDetailsPage(page)
+
+passenger_page.fill_all_passengers(
+    passengers=[
+        {"name": "DHIRAJKUMAR M", "age": "22", "gender": "M", "berth": "SL"},
+        {"name": "DEV", "age": "22", "gender": "M", "berth": "SU"},
+        {"name": "PARASHURAM", "age": "24", "gender": "M", "berth": "MB"},
+        {"name": "VILAS", "age": "23", "gender": "M", "berth": "LB"},
+        {"name": "MADHU", "age": "22", "gender": "F", "berth": "UB"}
+    ],
+    mobile_number="8489403967",
+    auto_upgrade=True,
+    payment_mode="card"
+)
+
+Recommended Future Assertion Usage:
+passenger_page = PassengerDetailsPage(page)
+
+passenger_page.fill_all_passengers(
+    passengers=[
+        {"name": "DHIRAJKUMAR M", "age": "22", "gender": "M", "berth": "SL"}
+    ],
+    mobile_number="8489403967",
+    auto_upgrade=True,
+    payment_mode="card"
+)
+
+assert passenger_page.is_passenger_details_continue_successful()
+"""
 
 
 
@@ -414,6 +543,7 @@ Available Page Object Classes:
 {TICKET_CANCELLATION_HISTORY_RULE_SET}
 {CHART_VACANCY_PAGE_RULE_SET}
 {TRAIN_BOOKING_PAGE_RULE_SET}
+{PASSENGER_DETAILS_PAGE_RULE_SET}
 
 Available Mobile Page Object Classes:
 {MOBILE_DEVICE_LOGIN_PAGE_RULE_SET}
