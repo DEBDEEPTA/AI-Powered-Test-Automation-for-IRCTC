@@ -1,11 +1,7 @@
-# pages/pnr_status_page.py
-
 from playwright.sync_api import Page, expect, TimeoutError as PlaywrightTimeoutError
 from utils.logger import get_logger
 
-
 logger = get_logger()
-
 
 class PNRStatusPage:
     def __init__(self, page: Page):
@@ -19,6 +15,7 @@ class PNRStatusPage:
     INITIAL_SUBMIT_BUTTON = "//input[@id='modal1']"
     CAPTCHA_SUBMIT_BUTTON = "input#submitPnrNo"
 
+    # HELPER FUNCTION
     def wait_for_manual_captcha_submit(self, pnr_page: Page) -> None:
         """
         Waits for user to manually enter CAPTCHA and click submit button.

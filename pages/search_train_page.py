@@ -51,8 +51,8 @@ class SearchTrainsPage:
         if general:
             self.page.locator(self.GENERAL_BOX).click()
             #self.page.wait_for_timeout(1000)
-            self.page.locator(f"(//div[contains(@class,'ui-dropdown')]//span[contains(text(),'{general}')])[1]").wait_for(state="visible")
-            self.page.locator(f"(//div[contains(@class,'ui-dropdown')]//span[contains(text(),'{general}')])[1]").click()
+            self.page.locator(f"(//li[@role='option' and contains(@aria-label,'{general}')])[1]").wait_for(state="visible")
+            self.page.locator(f"(//li[@role='option' and contains(@aria-label,'{general}')])[1]").click()
 
         #SEARCH
         #self.page.wait_for_timeout(1000)
