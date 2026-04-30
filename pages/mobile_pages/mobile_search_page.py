@@ -2,12 +2,13 @@ from playwright.sync_api import Page ,expect
 from playwright.sync_api import TimeoutError as PlaywrightTimeoutError
 import re
 from utils.logger import get_logger
+
 logger = get_logger()
 
-class SearchTrainsPage:
+class MobileSearchTrainsPage:
 
-    def __init__(self, page:Page):
-        self.page = page
+    def __init__(self, mobile_page:Page):
+        self.page = mobile_page
 
     # LOCATORS
     FROM_BOX = "//input[contains(@aria-label,'From station')]"
@@ -23,15 +24,13 @@ class SearchTrainsPage:
         # FROM
         from_search = self.page.locator(self.FROM_BOX)
         from_search.fill(source)
-        self.page.locator(f"//li[@id='p-highlighted-option']//span[contains(., '{source.upper()}')]").wait_for(
-            state="visible")
+        self.page.locator(f"//li[@id='p-highlighted-option']//span[contains(., '{source.upper()}')]").wait_for(state="visible")
         self.page.keyboard.press("Enter")
 
         # TO
         to_search = self.page.locator(self.TO_BOX)
         to_search.fill(destination)
-        self.page.locator(f"//li[@id='p-highlighted-option']//span[contains(., '{destination.upper()}')]").wait_for(
-            state="visible")
+        self.page.locator(f"//li[@id='p-highlighted-option']//span[contains(., '{destination.upper()}')]").wait_for(state="visible")
         self.page.keyboard.press("Enter")
 
         #DATE
@@ -65,6 +64,7 @@ class SearchTrainsPage:
             self.page.locator(self.NO_DIRECT_TRAIN_POP_UP).click()
         except PlaywrightTimeoutError:
             logger.info("Not a In-Direct train or pop up is not visible")
+
 
     def is_search_results_displayed(self):
         """
