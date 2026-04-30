@@ -1,4 +1,4 @@
-from playwright.sync_api import Page
+from playwright.sync_api import Page, expect, TimeoutError as PlaywrightTimeoutError
 
 class MobileLoginPage:
     URL = "https://www.irctc.co.in/nget/train-search"
@@ -21,6 +21,13 @@ class MobileLoginPage:
         """
         self.mobile_page.goto(MobileLoginPage.URL)
 
+        # CLOSE NOTIFICATION POP UP
+        try:
+            self.mobile_page.locator(self.NOTIFICATION_POP_UP).wait_for(state="visible")
+            self.mobile_page.locator(self.NOTIFICATION_POP_UP).click()
+        except PlaywrightTimeoutError:
+            print("Notification didn't pop up")
+
     def login(self, name:str,password:str):
         """
             Logs in to IRCTC using the given username and password.
@@ -40,13 +47,6 @@ class MobileLoginPage:
             Returns:
                 None
         """
-
-        try:
-            self.mobile_page.locator(self.NOTIFICATION_POP_UP).wait_for(state="visible")
-            self.mobile_page.locator(self.NOTIFICATION_POP_UP).click()
-        except TimeoutError:
-            print("Notification didn't pop up")
-
         self.mobile_page.locator(self.IRCTC_LOGIN_LABEL).click()
         self.mobile_page.locator(self.LOGIN_REGISTER_BUTTON).click()
 

@@ -1,23 +1,33 @@
 from utils.logger import get_logger
 logger = get_logger()
 
-PNR_STATUS_PAGE_RULE_SET = """
+LOGIN_PAGE_RULE_SET = """
 ==================================================
-3. PNRStatusPage
+1. LoginPage
 ==================================================
+
 Import:
-from pages.pnr_status_page import PNRStatusPage
+from pages.login_page import LoginPage
 
 Purpose:
-PNRStatusPage is used to check the status of a valid pnr_number.
+LoginPage is used to load the IRCTC home/login page and perform login-related actions.
 
 Methods:
-- pnr_status(self,pnr_number:str)-> None:
-- is_pnr_status_displayed(self,pnr_number)-> bool:
-    Returns True if valid PNR status is displayed, otherwise returns False.
+- load_login_page() -> None
+    Loads the IRCTC home page. This should be used as the first step in every generated test case.
 
-PNRStatusPage Rules:
-- Login is not required to check PNR Status search.
+- login(name: str, password: str) -> None
+    Enters username and password and performs the login action.
+
+- login_status(name: str) -> bool
+    Returns True if login is successful for the given user name, otherwise returns False.
+
+LoginPage Rules:
+- Do not include assertion to verify whether the URL is redirected to Dashboard.
+- Use login_status(name) method to assert login success.
+- Do not write raw Playwright locators in generated tests.
+- Do not hardcode real credentials unless the user explicitly provides them.
+- If credentials are not provided, use placeholder values such as "username" and "password".
 """
 SEARCH_TRAIN_PAGE_RULE_SET = """
 ==================================================
@@ -69,7 +79,7 @@ Parameter Details:
     This parameter is optional.
     If the user provides a quota/category, pass that value.
     If the user does not provide a quota/category, pass None.
-    
+
 SearchTrainsPage Rules:
 - Login is optional for train search.
 - Default behavior: generate train search tests without login.
@@ -112,37 +122,27 @@ search_page.search_trains(
 
 assert search_page.is_search_results_displayed()
 """
-LOGIN_PAGE_RULE_SET = """
+PNR_STATUS_PAGE_RULE_SET = """
 ==================================================
-1. LoginPage
+3. PNRStatusPage
 ==================================================
-
 Import:
-from pages.login_page import LoginPage
+from pages.pnr_status_page import PNRStatusPage
 
 Purpose:
-LoginPage is used to load the IRCTC home/login page and perform login-related actions.
+PNRStatusPage is used to check the status of a valid pnr_number.
 
 Methods:
-- load_login_page() -> None
-    Loads the IRCTC home page. This should be used as the first step in every generated test case.
+- pnr_status(self,pnr_number:str)-> None:
+- is_pnr_status_displayed(self,pnr_number)-> bool:
+    Returns True if valid PNR status is displayed, otherwise returns False.
 
-- login(name: str, password: str) -> None
-    Enters username and password and performs the login action.
-
-- login_status(name: str) -> bool
-    Returns True if login is successful for the given user name, otherwise returns False.
-
-LoginPage Rules:
-- Do not include assertion to verify whether the URL is redirected to Dashboard.
-- Use login_status(name) method to assert login success.
-- Do not write raw Playwright locators in generated tests.
-- Do not hardcode real credentials unless the user explicitly provides them.
-- If credentials are not provided, use placeholder values such as "username" and "password".
+PNRStatusPage Rules:
+- Login is not required to check PNR Status search.
 """
 TICKET_CANCELLATION_HISTORY_RULE_SET = """
 ==================================================
-1. TicketCancelHistoryPage
+4. TicketCancelHistoryPage
 ==================================================
 
 Import:
@@ -170,7 +170,7 @@ TicketCancelHistoryPage Rules:
 """
 CHART_VACANCY_PAGE_RULE_SET = """
 ==================================================
-ChartsVacancy Page Object
+5. ChartsVacancy Page Object
 ==================================================
 
 Import:
@@ -237,7 +237,7 @@ assert charts_page.is_chart_result_displayed()
 """
 TRAIN_BOOKING_PAGE_RULE_SET = """
 ==================================================
-BookingPage Page Object
+6. BookingPage Page Object
 ==================================================
 
 Import:
@@ -345,7 +345,7 @@ booking_page.select_train_based_on_availability(
 """
 PASSENGER_DETAILS_PAGE_RULE_SET = """
 ==================================================
-PassengerDetailsPage
+7. PassengerDetailsPage
 ==================================================
 
 Import:
@@ -503,12 +503,114 @@ MobileLoginPage Rules:
 - Do not hardcode real credentials unless the user explicitly provides them.
 - If credentials are not provided, use placeholder values such as "username" and "password".
 """
+MOBILE_DEVICE_SEARCH_TRAIN_PAGE_RULE_SET =  """
+==================================================
+2. MobileSearchTrainsPage
+==================================================
+
+Import:
+from pages.mobile_pages.mobile_search_trains_page import MobileSearchTrainsPage
+
+Purpose:
+MobileSearchTrainsPage is used to search trains in the IRCTC mobile UI.
+It fills source station, destination station, optional journey date, optional class, optional quota/category, and clicks the Search button.
+
+Functional Description:
+This page object handles the mobile UI train search flow. It is used when the test scenario is specifically related to mobile train search or mobile responsive train search.
+
+Methods:
+- search_trains(
+      source: str,
+      destination: str,
+      date: str = None,
+      classes: str = None,
+      general: str = None
+  ) -> None:
+    Searches trains from source station to destination station.
+    If date is provided, it selects the journey date.
+    If classes is provided, it selects the travel class.
+    If general is provided, it selects the quota/category.
+    Finally, it clicks the Search button.
+
+- is_search_results_displayed() -> bool:
+    Returns True if the mobile train search result page is displayed.
+    Returns False otherwise.
+
+Parameter Details:
+- source:
+    Source station name or station code.
+    Example: "HWH", "KGP", "MAS"
+
+- destination:
+    Destination station name or station code.
+    Example: "YPR", "JTJ", "NDLS"
+
+- date:
+    Journey date in dd/mm/yyyy format.
+    This parameter is optional.
+    Example: "26/06/2026"
+    If user does not provide date, pass None.
+
+- classes:
+    Travel class.
+    This parameter is optional.
+    Example: "SL", "3A", "2A", "CC"
+    If user does not provide class, pass None.
+
+- general:
+    Quota/category.
+    This parameter is optional.
+    Example: "GENERAL", "TATKAL", "LADIES"
+    If user does not provide quota/category, pass None.
+
+MobileSearchTrainsPage Rules:
+- Use this page object only for mobile UI train search scenarios.
+- Login is not required for train search unless the user explicitly asks for login before searching.
+- Use search_trains() to perform the mobile train search.
+- Use is_search_results_displayed() to assert that search results are displayed.
+- Do not write raw Playwright locators inside generated tests.
+- Do not call internal locators directly from the test.
+- Do not invent extra methods that are not listed here.
+- Do not perform booking or payment from this page object.
+- This page object only searches trains and validates search result page display.
+
+Assertion Rules:
+- After calling search_trains(), assert using is_search_results_displayed().
+- Do not assert URL directly in the generated test.
+- Do not create custom assertion helper functions inside the generated test.
+
+Example Usage:
+mobile_search_page = MobileSearchTrainsPage(page)
+
+mobile_search_page.search_trains(
+    source="HWH",
+    destination="YPR",
+    date="26/06/2026",
+    classes="SL",
+    general="GENERAL"
+)
+
+assert mobile_search_page.is_search_results_displayed()
+
+Example Usage Without Optional Fields:
+mobile_search_page = MobileSearchTrainsPage(page)
+
+mobile_search_page.search_trains(
+    source="HWH",
+    destination="YPR",
+    date=None,
+    classes=None,
+    general=None
+)
+
+assert mobile_search_page.is_search_results_displayed()
+"""
 MOBILE_DEVICE_PNR_STATUS_PAGE_RULE_SET = """
 ==================================================
 3. MobilePNRStatusPage
 ==================================================
 Import:
-from  pages.mobile_pages.mobile_pnr_status_page import MobilePNRStatusPage
+from pages.mobile_pages.mobile_search_page import MobileSearchTrainsPage
 
 Purpose:
 PNRStatusPage is used to check the status of a valid pnr_number.
@@ -522,6 +624,75 @@ Methods:
 PNRStatusPage Rules:
 - Login is not required to check PNR Status search.
 """
+MOBILE_CHART_VACANCY_PAGE_RULE_SET = """
+==================================================
+4. MobileChartsVacancyPage
+==================================================
+Import:
+from pages.mobile_pages.mobile_chart_vacancy_page import MobileChartsVacancyPage
+Purpose:
+ChartsVacancy is used to open the IRCTC Charts / Vacancy page in a new browser tab and search train chart/vacancy details using train number and boarding station.
+It checks Chart vacancy in mobile UI
+
+Methods:
+- open_charts() -> None
+    Clicks the "CHARTS / VACANCY" option from the IRCTC home page.
+    This opens the Charts / Vacancy page in a new tab.
+    The new tab is stored internally as self.new_tab.
+
+- select_train(train_number: str) -> None
+    Enters the train number into the train search input on the Charts / Vacancy page.
+    Example:
+    select_train("12863")
+
+- select_boarding_station(boarding_station_code: str) -> None
+    Selects the boarding station using station code and clicks "Get Train Chart".
+    Example:
+    select_boarding_station("HWH")
+
+- is_chart_result_displayed() -> bool
+    Verifies whether the chart/vacancy result flow completed.
+    Returns True if either:
+    1. The "Chart not prepared" popup/message is visible, or
+    2. The page URL changes to the train composition result page containing "charts/traincomposition".
+    Returns False if the expected result page is not displayed within timeout.
+
+ChartsVacancy Rules:
+- Use ChartsVacancy for Charts / Vacancy test scenarios.
+- As the first step, use MobileLoginPage.load_login_page() to load the IRCTC home page for mobile UI.
+- Login is not required for Charts / Vacancy search unless the user explicitly asks for login.
+- Call open_charts() before calling select_train() or select_boarding_station().
+- Call select_train(train_number) before select_boarding_station(boarding_station_code).
+- After open_charts(), the page object handles the new tab internally using self.new_tab.
+- Do not pass page or new_tab from the test case to ChartsVacancy methods.
+- Do not write raw Playwright locators in generated tests.
+- Do not invent extra methods that are not listed here.
+- Always assert Charts / Vacancy scenarios using is_chart_result_displayed().
+- A "Chart not prepared" message should be treated as a valid displayed result because the application responded to the search.
+
+Required Parameters:
+- train_number:
+    Train number as string.
+    Example: "12863"
+
+- boarding_station_code:
+    Boarding station code as string.
+    Example: "HWH"
+
+Example Usage:
+login_page = MobileLoginPage(page)
+login_page.load_login_page()
+
+charts_page = ChartsVacancy(page)
+charts_page.open_charts()
+charts_page.select_train("12863")
+charts_page.select_boarding_station("HWH")
+
+assert charts_page.is_chart_result_displayed()
+
+
+"""
+
 
 
 
@@ -547,7 +718,9 @@ Available Page Object Classes:
 
 Available Mobile Page Object Classes:
 {MOBILE_DEVICE_LOGIN_PAGE_RULE_SET}
+{MOBILE_DEVICE_SEARCH_TRAIN_PAGE_RULE_SET}
 {MOBILE_DEVICE_PNR_STATUS_PAGE_RULE_SET}
+{MOBILE_CHART_VACANCY_PAGE_RULE_SET}
 
 ==================================================
 Global Rules
