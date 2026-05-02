@@ -473,8 +473,6 @@ passenger_page.fill_all_passengers(
 assert passenger_page.is_passenger_details_continue_successful()
 """
 
-
-
 MOBILE_DEVICE_LOGIN_PAGE_RULE_SET = """
 ==================================================
 1. MobileLoginPage
@@ -692,6 +690,107 @@ assert charts_page.is_chart_result_displayed()
 
 
 """
+MOBILE_BOOKING_PAGE_RULE_SET ="""
+==================================================
+5. MobileBookingPage Page Object
+==================================================
+
+Import:
+from pages.mobile_pages.mobile_booking_page import MobileBookingPage
+
+Purpose:
+MobileBookingPage is used to select a train from the train availability results
+and proceed with booking by clicking the available "Book Now" option.
+
+Used to perform ticket booking operations in Mobile UI.
+
+Important Workflow Dependency:
+MobileBookingPage should be used only after:
+1. MobileLoginPage is used to load the IRCTC mobile home page.
+2. User login is completed (if required).
+3. MobileSearchTrainsPage is used to search train availability.
+4. Train search results are displayed.
+
+Methods:
+- select_train_based_on_availability(input_date: str, preferred_class: str = "SL") -> None
+    Selects a train based on seat availability for the given journey date and preferred class.
+    It checks available train cards, selects the preferred class, verifies availability for the given date,
+    skips unavailable trains, and clicks the enabled "Book Now" button for a valid train.
+    It also handles the confirmation popup if it appears.
+
+Parameter Details:
+- input_date:
+    Journey date in dd/mm/yyyy format.
+    Example: "26/06/2026"
+
+- preferred_class:
+    Preferred travel class.
+    Default value: "SL"
+
+    Supported values:
+    - "SL"  for Sleeper
+    - "3A"  for AC 3 Tier
+    - "2A"  for AC 2 Tier
+    - "1A"  for AC First Class
+    - "3E"  for AC 3 Economy
+    - "CC"  for Chair Car
+    - "EC"  for Executive Chair Car
+    - "2S"  for Second Sitting
+
+MobileBookingPage Rules:
+- Use MobileBookingPage only for train booking scenarios.
+- To book a train, the user should be logged in first using MobileLoginPage (if required).
+- Before using MobileBookingPage, search train availability using MobileSearchTrainsPage.
+- After login and train search, call select_train_based_on_availability().
+- Do not use MobileBookingPage before MobileSearchTrainsPage.
+- Do not write raw Playwright locators in generated tests.
+- Do not call MobileBookingPage helper/private methods directly.
+- Do not call methods whose names start with underscore.
+- Do not call wait_for_results() directly.
+- Do not call handle_confirmation_popup_if_present() directly.
+- Do not invent validation/assertion methods for MobileBookingPage.
+- Do not perform payment confirmation.
+- Stop the booking flow after MobileBookingPage clicks Book Now and handles confirmation if present.
+
+Data Consistency Rules:
+- If the user does not provide preferred class, use "SL" as default.
+- If the user provides a class, use that class as preferred_class.
+- If the user provides journey date in short format such as "26/06/26",
+  convert it to "26/06/2026" before passing it to MobileBookingPage.
+
+Mapping Rules (STRICT):
+- input_date MUST be the same as the value passed to MobileSearchTrainsPage.search_trains(date=...)
+- preferred_class MUST be the same as the value passed to MobileSearchTrainsPage.search_trains(classes=...)
+- Do NOT generate different date or class values between MobileSearchTrainsPage and MobileBookingPage.
+
+Correct Example:
+search_page.search_trains(
+    source="HWH",
+    destination="YPR",
+    date="26/06/2026",
+    classes="SL",
+    general="GENERAL"
+)
+
+booking_page.select_train_based_on_availability(
+    input_date="26/06/2026",
+    preferred_class="SL"
+)
+
+Incorrect Example:
+search_page.search_trains(
+    source="HWH",
+    destination="YPR",
+    date="26/06/2026",
+    classes="SL",
+    general="GENERAL"
+)
+
+booking_page.select_train_based_on_availability(
+    input_date="27/06/2026",
+    preferred_class="3A"
+)
+"""
 
 
 
@@ -721,6 +820,7 @@ Available Mobile Page Object Classes:
 {MOBILE_DEVICE_SEARCH_TRAIN_PAGE_RULE_SET}
 {MOBILE_DEVICE_PNR_STATUS_PAGE_RULE_SET}
 {MOBILE_CHART_VACANCY_PAGE_RULE_SET}
+{MOBILE_BOOKING_PAGE_RULE_SET}
 
 ==================================================
 Global Rules

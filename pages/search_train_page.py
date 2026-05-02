@@ -23,16 +23,15 @@ class SearchTrainsPage:
         # FROM
         from_search = self.page.locator(self.FROM_BOX)
         from_search.fill(source)
-        self.page.locator(f"//li[@id='p-highlighted-option']//span[contains(., '{source.upper()}')]").wait_for(
-            state="visible")
+        self.page.locator(f"//li[@id='p-highlighted-option']//span[contains(., '{source.upper()}')]").wait_for(state="visible")
         self.page.keyboard.press("Enter")
 
         # TO
         to_search = self.page.locator(self.TO_BOX)
         to_search.fill(destination)
-        self.page.locator(f"//li[@id='p-highlighted-option']//span[contains(., '{destination.upper()}')]").wait_for(
-            state="visible")
+        self.page.locator(f"//li[@id='p-highlighted-option']//span[contains(., '{destination.upper()}')]").wait_for(state="visible")
         self.page.keyboard.press("Enter")
+
 
         #DATE
         if date:

@@ -7,12 +7,14 @@ class MobileLoginPage:
         self.mobile_page = mobile_page
 
     #LOCATORS
-    IRCTC_LOGIN_LABEL = "// label[text() = 'IRCTC']"
+    IRCTC_LOGIN_LABEL = "//label[text() = 'IRCTC']"
     LOGIN_REGISTER_BUTTON = "//button[contains(text(), 'LOGIN') and contains(text(), 'REGISTER')]"
     USERNAME_INPUT_BOX = "//input[@placeholder='User Name']"
     PASSWORD_INPUT_BOX = "//input[@placeholder='Password']"
     SIGN_IN_BUTTON = "//button[text()='SIGN IN']"
+
     NOTIFICATION_POP_UP = "//button[contains(text(), 'Later')]"
+   # SIDE_BAR_OVERLAY = "//div[contains(@class, 'ui-widget-overlay ui-sidebar-mask')]"
 
 
     def load_login_page(self):
@@ -75,4 +77,8 @@ class MobileLoginPage:
 
         self.mobile_page.locator(LOGGED_IN_USER_NAME).wait_for(state="visible")
         logged_in_user_name = self.mobile_page.locator(LOGGED_IN_USER_NAME)
-        return  logged_in_user_name.is_visible()
+        flag = logged_in_user_name.is_visible()
+
+        # CLOSE THE SIDE NAVIGATION BAR
+        self.mobile_page.keyboard.press("Escape")
+        return flag
