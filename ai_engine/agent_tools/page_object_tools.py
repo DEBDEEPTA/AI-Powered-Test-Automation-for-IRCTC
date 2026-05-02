@@ -291,7 +291,6 @@ BookingPage Rules:
 - Do not call wait_for_results() directly.
 - Do not call handle_confirmation_popup_if_present() directly.
 - Do not invent validation/assertion methods for BookingPage.
-- Do not perform payment confirmation.
 - Stop the booking flow after BookingPage clicks Book Now and handles confirmation if present.
 - If the user does not provide preferred class, use "SL" as default.
 - If the user provides a class, use that class as preferred_class.
@@ -507,7 +506,7 @@ MOBILE_DEVICE_SEARCH_TRAIN_PAGE_RULE_SET =  """
 ==================================================
 
 Import:
-from pages.mobile_pages.mobile_search_trains_page import MobileSearchTrainsPage
+from pages.mobile_pages.mobile_search_page import MobileSearchTrainsPage
 
 Purpose:
 MobileSearchTrainsPage is used to search trains in the IRCTC mobile UI.
@@ -738,6 +737,7 @@ Parameter Details:
     - "2S"  for Second Sitting
 
 MobileBookingPage Rules:
+- As this is a mobile pages use mobile_page as parameter in the generated test cases.
 - Use MobileBookingPage only for train booking scenarios.
 - To book a train, the user should be logged in first using MobileLoginPage (if required).
 - Before using MobileBookingPage, search train availability using MobileSearchTrainsPage.
@@ -749,8 +749,8 @@ MobileBookingPage Rules:
 - Do not call wait_for_results() directly.
 - Do not call handle_confirmation_popup_if_present() directly.
 - Do not invent validation/assertion methods for MobileBookingPage.
-- Do not perform payment confirmation.
 - Stop the booking flow after MobileBookingPage clicks Book Now and handles confirmation if present.
+- 
 
 Data Consistency Rules:
 - If the user does not provide preferred class, use "SL" as default.

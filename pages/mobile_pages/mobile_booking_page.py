@@ -4,8 +4,8 @@ import re
 
 logger = get_logger()
 class MobileBookingPage:
-    def __init__(self, page: Page):
-        self.page = page
+    def __init__(self, mobile_page: Page):
+        self.page = mobile_page
 
     TRAIN_CARDS = "xpath=//div[contains(@class,'form-group') and contains(@class,'bull-back') and contains(@class,'border-all')][.//app-train-avl-enq]"
     TRAIN_NAME = "xpath=.//div[contains(@class,'train-heading')]//strong"
